@@ -5,26 +5,33 @@ import random
 from datetime import datetime
 
 from slackclient import SlackClient
-
+#import logging
+#logging.getLogger('slackclient.client').addHandler(logging.NullHandler())
 
 # Instantiate Slack Client
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+#print slack_client
 
 # Lunch Bot User ID
 lunch_bot_id = None
 
 # Constants
 RTM_READ_DELAY = 1	# 1 sec delay between reading from RTM
+MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
+
+# Command Keywords
 LUNCH_COMMAND = "lunch"
 WHERE_COMMAND = "where"
 PLACES_COMMAND = "places"
 LIST_COMMAND = "list"
-MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
+NEVER_COMMAND = "never"
+
+# Dataset
 RESTAURANTS = ["Au Bon Pain (Kern Blgd)", "Pho11", "Noodles & Co.", "Subway", "Starbucks", "Little Scheshuan", "Qdoba","Margarita\'s Pizza", "California Tortilla", "Doan\'s Bones", "John\'s Shanghai", "Five Guys", "Cafe 210", "Tadashi", "Federal Taphouse" , "Green Bowl", "Penn Pide", "Fiddlehead", "Burger King (HUB)", "Chik-fil-A (HUB)", "Sbarro (HUB)", "Panda Express (HUB)", "HUB Soups and Garden", "Blue Burrito (HUB)", "Grate Chee (HUB)", "McAlister\'s Deli", "Mixed Greens (HUB)","Hibachi-San (HUB)" ,"Sauly Boy\'s", "Jersey Mike\'s", "Kondu", "Panera Bread", "Champs", "Irving\'s", "Kaarma", "Cozy Thai", "Shaker\'s Grill Food Cart", "Yallah Taco", "India Pavilion", "Underground", "Canyon", "Taco Bell", "Chipotle...", "Waker Chicken", "Yummy Cafe", "McLanahans", "The Deli & Z Bar", "Primanti Bros.", "The Waffle Shop", "Big Bowl", "Penn Kebab", "Jimmy John\'s", "McDonals\'s", "Are U Hungry", "Beijing", "Mad Mex"]
+AWFUL_PLACES = ["Qdoba", "Au Bon Pain (Westgate)", "Canyon", "Chipotle"]
 
 # Generate random seed
 random_num = random.seed(datetime.now())
-print("Random Seed..." + str(random_num))
 
 
 
@@ -89,6 +96,13 @@ def send_lunch_suggestions(channel):
 	send_response_back(suggestion, channel)
 
 
+def send_never_places(channel):
+
+    places = ", ".join(AWFUL_PLACES)
+    response = "You might want to avoid these places... " + places + "."
+    send_response_back(response, channel)
+
+
 def send_unknown_response(channel):
 
 	# Craft response
@@ -120,18 +134,23 @@ if __name__ == "__main__":
 			
 			# If the user made a request, respond
 			if user_input != []:
+
 				# Get command and channel
 				command, channel = parse_bot_commands(user_input)
 			
 				# Process command and respond
 				if command:
-					command = command.lower()
-					if PLACES_COMMAND in command or LIST_COMMAND in command:
-						send_restaurant_list(channel)
-					elif LUNCH_COMMAND in command or WHERE_COMMAND in command:
-						send_lunch_suggestions(channel)
-					else:
-						send_unknown_response(channel)
+				    
+                                    command = command.lower()
+	                            
+                                    if NEVER_COMMAND in command:
+                                        send_never_places(channel)
+				    elif PLACES_COMMAND in command or LIST_COMMAND in command:
+					send_restaurant_list(channel)
+				    elif LUNCH_COMMAND in command or WHERE_COMMAND in command:
+					send_lunch_suggestions(channel)
+                                    else:
+					send_unknown_response(channel)
 
 			time.sleep(RTM_READ_DELAY)
 

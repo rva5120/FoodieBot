@@ -25,6 +25,7 @@ WHERE_COMMAND = "where"
 PLACES_COMMAND = "places"
 LIST_COMMAND = "list"
 NEVER_COMMAND = "never"
+AGAIN_COMMAND = "again"
 
 # Dataset
 RESTAURANTS = ["Au Bon Pain (Kern Blgd)", "Pho11", "Noodles & Co.", "Subway", "Starbucks", "Little Scheshuan", "Qdoba","Margarita\'s Pizza", "California Tortilla", "Doan\'s Bones", "John\'s Shanghai", "Five Guys", "Cafe 210", "Tadashi", "Federal Taphouse" , "Green Bowl", "Penn Pide", "Fiddlehead", "Burger King (HUB)", "Chik-fil-A (HUB)", "Sbarro (HUB)", "Panda Express (HUB)", "HUB Soups and Garden", "Blue Burrito (HUB)", "Grate Chee (HUB)", "McAlister\'s Deli", "Mixed Greens (HUB)","Hibachi-San (HUB)" ,"Sauly Boy\'s", "Jersey Mike\'s", "Kondu", "Panera Bread", "Champs", "Irving\'s", "Kaarma", "Cozy Thai", "Shaker\'s Grill Food Cart", "Yallah Taco", "India Pavilion", "Underground", "Canyon", "Taco Bell", "Chipotle...", "Waker Chicken", "Yummy Cafe", "McLanahans", "The Deli & Z Bar", "Primanti Bros.", "The Waffle Shop", "Big Bowl", "Penn Kebab", "Jimmy John\'s", "McDonals\'s", "Are U Hungry", "Beijing", "Mad Mex"]
@@ -147,7 +148,7 @@ if __name__ == "__main__":
                                         send_never_places(channel)
 				    elif PLACES_COMMAND in command or LIST_COMMAND in command:
 					send_restaurant_list(channel)
-				    elif LUNCH_COMMAND in command or WHERE_COMMAND in command:
+				    elif LUNCH_COMMAND in command or WHERE_COMMAND in command or AGAIN_COMMAND in command:
 					send_lunch_suggestions(channel)
                                     else:
 					send_unknown_response(channel)
